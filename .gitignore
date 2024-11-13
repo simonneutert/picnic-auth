@@ -1,0 +1,16 @@
+.env
+
+# Visual Studio Code
+.vscode/settings.json
+
+# Mac OS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Node / npm
+node_modules/
+
+# Deno test
+coverage

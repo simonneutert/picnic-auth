@@ -1,0 +1,26 @@
+name: Test the code
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Setup Deno environment
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: test
+        run: deno test -A --coverage
+
+      - name: print coverage
+        run: deno coverage
