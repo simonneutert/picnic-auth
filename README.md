@@ -1,5 +1,7 @@
 # Picnic Auth<!-- omit from toc -->
 
+A single user authentication service that is simple and fun - like a picnic.
+
 <img src="/docs/img/picnic_auth_weblogo.webp" height="auto" width="320px" alt="Picnic Auth Logo - a lock with a smiley face locking a picnic basket">
 
 > Auth made easy. Inspired by [Moron CMS](https://github.com/rabocalypse/moroncms). 
