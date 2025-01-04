@@ -38,19 +38,21 @@ This is a simple sequence diagram of the process, when login is successful:
 <pre>
   <code class="language-mermaid">
 sequenceDiagram
-    Frontend Client ->>Server-Part/Backend: Let me browser your resources.
-    Server-Part/Backend-->>Frontend Client: Sure! Here you go. Some stuff requires authentication.
+    Frontend Client ->> Server-Part/Backend: Let me browser your resources.
+    Server-Part/Backend -->> Frontend Client: Sure! Here you go. Some stuff requires authentication.
 
-    Frontend Client->>Server-Part/Backend: I want to edit a resource.
-    Server-Part/Backend-->>Frontend Client: You need to authenticate first, please auth with `picnic-auth`.
+    Frontend Client ->> Server-Part/Backend: I want to edit a resource.
+    Server-Part/Backend -->> Frontend Client: You need to authenticate first, please auth with `picnic-auth`.
 
-    Frontend Client ->>Picnic Auth: POST to `/auth` with `username` and `password`.
-    Picnic Auth ->>Frontend Client: You're authed! Take this JWT (it expires in 1 hour).
+    Frontend Client ->> Server-Part/Backend: POST `username` and `password`.
+    Server-Part/Backend ->> Picnic Auth: POST to `/auth` with `username` and `password`.
+    Picnic Auth ->> Server-Part/Backend: Your user is authed! This JWT (it expires in 1 hour).
+    Server-Part/Backend ->> Frontend Client: You're authed! Take this JWT (it expires in 1 hour).
 
-    Frontend Client->>Server-Part/Backend: I want to edit a resource. I have a JWT in my header for you.
-    Server-Part/Backend-->>Picnic Auth: Extract JWT from header and validate against /auth/bearer.
-    Picnic Auth-->>Server-Part/Backend: This JWT is valid. Here's the user object for you to double check.
-    Server-Part/Backend-->>Frontend Client: You're good to go. Here's the resource you wanted to edit.
+    Frontend Client ->> Server-Part/Backend: I want to edit a resource. I have a JWT in my header for you.
+    Server-Part/Backend -->> Picnic Auth: Extract JWT from header and validate against /auth/bearer.
+    Picnic Auth -->> Server-Part/Backend: This JWT is valid. Here's the user object for you to double check.
+    Server-Part/Backend -->> Frontend Client: You're good to go. Here's the resource you wanted to edit.
   </code>
 </pre>
 
