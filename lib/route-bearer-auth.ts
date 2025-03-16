@@ -1,4 +1,5 @@
 import * as jose from "jose";
+import corsHeader from "./cors-header.ts";
 
 /** Handles bearer token authentication for a request */
 export async function routeBearerAuth(
@@ -15,7 +16,9 @@ export async function routeBearerAuth(
       secret,
     );
     debugProtectedHeader = protectedHeader;
-    return Response.json(payload);
+    return new Response(JSON.stringify(payload), {
+      headers: corsHeader.header,
+    });
   } catch (error) {
     console.error(error);
     if (debugProtectedHeader) {
@@ -24,6 +27,7 @@ export async function routeBearerAuth(
 
     return new Response("Unauthorized", {
       status: 401,
+      headers: corsHeader.header,
     });
   }
 }
