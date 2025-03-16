@@ -60,6 +60,8 @@ The server exposes three main routes for authentication:
 
 ## Routes
 
+CORS is set to "*" for all routes. This means that the server will accept requests from any origin. This may not be what you want for production use.
+
 ### POST `/auth`
 
 Authenticates the user and returns a bearer token.
@@ -87,6 +89,8 @@ variables in a `.env` file or directly in your environment.
 - `PICNIC_JWT_EXPIRATION_TIME` - The duration for which the bearer token is valid.\
   (Default: "60m")
 - `PICNIC_PORT` - The port on which the server will run. (Default: 8000)
+- `CORS_ORIGIN` - The origin that is allowed to access the server.\
+  (Default: "*")
 
 ### JWT Expiration Time Settings
 
