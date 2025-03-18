@@ -10,7 +10,7 @@ A single user authentication service that is simple and fun - like a picnic.
 
 This project is a [Deno 🦕](https://deno.com) server that handles authentication using bearer tokens. It includes routes for user authentication, JWT (Bearer) validation functionality.
 
-Do not take this project too seriously. It is a simple project to demonstrate how to use JWTs for authentication in Deno.
+Don’t take this project too seriously—it’s just a simple demonstration of how to use JWTs for authentication in Deno.
 
 ---
 
