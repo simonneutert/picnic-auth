@@ -59,7 +59,7 @@ Test with [httpie](https://httpie.io):
 
 ```bash
 # httpie example for default project settings:
-$ http POST ":8080/auth" username=picnic password=mypicnic
+$ http POST ":8000/auth" username=picnic password=mypicnic
 ```
 
 Copy the token value from the response (replace JWT-TOKEN with it) and test

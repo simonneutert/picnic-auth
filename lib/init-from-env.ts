@@ -11,6 +11,7 @@ export interface ServerEnv {
   expirationTime: string; // like "60m", @see joseJwtExpirationTime
   JWTsecret: string;
   serverPort: number;
+  corsOrigin: string;
 }
 
 /**
@@ -38,6 +39,7 @@ export function initFromEnv(): ServerEnv {
     expirationTime: _loadJWTExpirationTimeEnv(),
     JWTsecret: _loadJWTSecretEnv(),
     serverPort: _loadPicnicPortEnv(),
+    corsOrigin: _loadCorsOriginEnv(),
   };
 }
 
@@ -47,7 +49,6 @@ function _loadJWTExpirationTimeEnv(): string {
     defaultExpirationTime;
   const expirationTime = validateExpirationTime(envExpirationTime);
   if (expirationTime) {
-    console.log(`JWT Expiration time: ${expirationTime}`);
     return expirationTime;
   } else {
     logErrorUsingDefaultTime(envExpirationTime, defaultExpirationTime);
@@ -65,10 +66,7 @@ function logErrorUsingDefaultTime(time: string, defaultTime: string): void {
 function _loadJWTSecretEnv(): string {
   const envJWTsecret = Deno.env.get("PICNIC_JWT_SECRET");
   if (!envJWTsecret || envJWTsecret.length < 32) {
-    console.log(
-      "PICNIC_JWT_SECRET is not set or too short, generating a random one.",
-    );
-    console.log(`
+    console.error(`
       ############################################################
       
       Please set PICNIC_JWT_SECRET in your environment variables.
@@ -93,4 +91,13 @@ function _loadJWTSecretEnv(): string {
 function _loadPicnicPortEnv(): number {
   const picnicPort = parseInt(Deno.env.get("PICNIC_PORT") || "8000");
   return picnicPort;
+}
+
+/** Loads the CORS origin from the environment variables. */
+function _loadCorsOriginEnv(): string {
+  const corsOrigin = Deno.env.get("CORS_ORIGIN") || "*";
+  if (corsOrigin === "*") {
+    console.warn("CORS_ORIGIN is set to '*' - this allows requests from any origin. Consider setting a specific origin for production.");
+  }
+  return corsOrigin;
 }

@@ -11,53 +11,26 @@ import { parseBearerTokenFromHeader } from "../lib/route-bearer-auth.ts";
 Deno.test("async test", async () => {
   const jwt = createJWT(
     { username: "picnic", password: "mypicnic" },
-    stringTo32ByteArray("secretsecretsecretsecretsecretsecretsecretsecret"),
+    await stringTo32ByteArray("secretsecretsecretsecretsecretsecretsecretsecret"),
     "1h",
   );
 
   assert((await jwt).startsWith("eyJ"));
 });
 
-Deno.test("stringTo32ByteSecret", () => {
-  assertEquals(
-    stringTo32ByteArray("secretsecretsecretsecretsecretsecretsecretsecret"),
-    new Uint8Array(
-      [
-        177,
-        231,
-        43,
-        122,
-        219,
-        30,
-        114,
-        183,
-        173,
-        177,
-        231,
-        43,
-        122,
-        219,
-        30,
-        114,
-        183,
-        173,
-        177,
-        231,
-        43,
-        122,
-        219,
-        30,
-        114,
-        183,
-        173,
-        177,
-        231,
-        43,
-        122,
-        219,
-      ],
-    ),
-  );
+Deno.test("stringTo32ByteSecret", async () => {
+  const derivedKey = await stringTo32ByteArray("secretsecretsecretsecretsecretsecretsecretsecret");
+  
+  // Test that it returns 32 bytes
+  assertEquals(derivedKey.length, 32);
+  
+  // Test that it's deterministic (same input = same output)
+  const derivedKey2 = await stringTo32ByteArray("secretsecretsecretsecretsecretsecretsecretsecret");
+  assertEquals(derivedKey, derivedKey2);
+  
+  // Test that different inputs produce different outputs
+  const differentKey = await stringTo32ByteArray("differentsecret");
+  assert(derivedKey.some((byte, index) => byte !== differentKey[index]));
 });
 
 Deno.test("parse bearer token from header", () => {

@@ -1,33 +1,28 @@
 import * as jose from "jose";
-import corsHeader from "./cors-header.ts";
+import { createCorsHeaders } from "./cors-header.ts";
 
 /** Handles bearer token authentication for a request */
 export async function routeBearerAuth(
   req: Request,
   secret: Uint8Array,
+  corsOrigin: string,
 ): Promise<Response> {
   const authHeader = parseBearerTokenFromHeader(
     req.headers.get("Authorization"),
   );
-  let debugProtectedHeader: jose.CompactJWEHeaderParameters | unknown;
   try {
-    const { payload, protectedHeader } = await jose.jwtDecrypt(
+    const { payload } = await jose.jwtDecrypt(
       authHeader,
       secret,
     );
-    debugProtectedHeader = protectedHeader;
     return new Response(JSON.stringify(payload), {
-      headers: corsHeader.header,
+      headers: createCorsHeaders(corsOrigin),
     });
-  } catch (error) {
-    console.error(error);
-    if (debugProtectedHeader) {
-      console.error(debugProtectedHeader);
-    }
-
+  } catch (_error) {
+    console.error("JWT validation failed");
     return new Response("Unauthorized", {
       status: 401,
-      headers: corsHeader.header,
+      headers: createCorsHeaders(corsOrigin),
     });
   }
 }
