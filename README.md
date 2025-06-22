@@ -28,6 +28,7 @@ Read the [Official Documentation](https://www.simon-neutert.de/picnic-auth/).
 - [Environment Variables](#environment-variables)
   - [JWT Expiration Time Settings](#jwt-expiration-time-settings)
     - [Examples of valid expiration times:](#examples-of-valid-expiration-times)
+- [Security Features](#security-features)
 - [Ideas / Todos / Not sure yet](#ideas--todos--not-sure-yet)
 - [Deno Dependencies](#deno-dependencies)
   - [Main Dependencies](#main-dependencies)
@@ -60,21 +61,25 @@ The server exposes three main routes for authentication:
 
 ## Routes
 
-CORS is set to "*" for all routes. This means that the server will accept requests from any origin. This may not be what you want for production use.
+CORS origin can be configured via the `CORS_ORIGIN` environment variable. By default it's set to "*" which accepts requests from any origin - configure this for production use.
 
 ### POST `/auth`
 
 Authenticates the user and returns a bearer token.
 
-- **Request Body**: JSON object containing `username` and `password`.
-- **Response**: JSON object containing the bearer token.
+- **Request Body**: JSON object containing `username` and `password`
+- **Content-Type**: Must be `application/json`
+- **Rate Limiting**: 5 attempts per 15 minutes per IP
+- **Response**: JSON object containing the bearer token
+- **Security**: Input validation, timing attack protection, request size limits (1KB)
 
 ### POST `/auth/bearer`
 
 Validates the provided bearer token.
 
-- **Headers**: `Authentication` header with the bearer token.
-- **Response**: JSON object containing user information if the token is valid.
+- **Headers**: `Authorization: Bearer <token>`
+- **Response**: JSON object containing user information if the token is valid
+- **Security**: Secure JWT decryption with proper error handling
 
 ## Environment Variables
 
@@ -85,7 +90,7 @@ variables in a `.env` file or directly in your environment.
   (Default: "picnic")
 - `PICNIC_PASSWORD_BCRYPT` - The hashed password for authentication.\
   (Default: "mypicnic")
-- `PICNIC_JWT_SECRET` - The secret key for signing JWT tokens.
+- `PICNIC_JWT_SECRET` - The secret key for JWT token encryption (min 32 chars, uses PBKDF2 key derivation).
 - `PICNIC_JWT_EXPIRATION_TIME` - The duration for which the bearer token is valid.\
   (Default: "60m")
 - `PICNIC_PORT` - The port on which the server will run. (Default: 8000)
@@ -139,6 +144,31 @@ The time unit can be one of the following:
 - `2weeks` - 2 weeks
 
 </details>
+
+## Security Features
+
+This project implements several production-ready security features:
+
+### 🔐 **Authentication Security**
+- **PBKDF2 Key Derivation**: Uses crypto.subtle with 100,000 iterations and SHA-256
+- **Timing Attack Protection**: Constant-time string comparison prevents username enumeration
+- **bcrypt Password Hashing**: Industry-standard password protection
+
+### 🛡️ **Request Protection**
+- **Rate Limiting**: 5 attempts per 15 minutes per IP address with sliding window
+- **Input Validation**: Content-Type validation, request size limits (1KB), SQL injection protection
+- **Request Timeouts**: 5-second timeout protection against connection hanging attacks
+
+### 🔒 **Response Security**
+- **Security Headers**: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, and more
+- **CORS Configuration**: Configurable origin restrictions via `CORS_ORIGIN` environment variable
+- **Error Handling**: Consistent error responses prevent information disclosure
+
+### 📊 **Rate Limiting Headers**
+All authentication responses include rate limiting information:
+- `X-RateLimit-Limit`: Maximum attempts allowed
+- `X-RateLimit-Remaining`: Attempts remaining in current window
+- `X-RateLimit-Reset`: Seconds until rate limit resets
 
 ## Ideas / Todos / Not sure yet
 

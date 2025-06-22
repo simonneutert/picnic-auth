@@ -15,6 +15,12 @@ The valid time window (duration) is set to 8 hours by default.
 
 Accepts a `username` and `password` parameter to authenticate a user.
 
+**Security Features:**
+- Rate limiting: 5 attempts per 15 minutes per IP
+- Input validation and request size limits (1KB)
+- Timing attack protection
+- Content-Type validation (must be application/json)
+
 | URL     | Method | Description                                         |
 | ------- | ------ | --------------------------------------------------- |
 | `/auth` | `POST` | Authenticates the user, and returns a bearer token. |
@@ -32,10 +38,26 @@ Accepts a `username` and `password` parameter to authenticate a user.
 "eyJhbGciOiJkalbmMiOiJBMTI4Q0JDLUhTMjU2In0..QUCdwTA-AkmzQ9wvbo3SUw.aO6wF-abc_a-X0Ovb1I5XqFd2YtoRk61ZEzXcwZSW1R_UVF12IgYMg"
 ```
 
+**Response Headers:**
+- `X-RateLimit-Limit`: Maximum attempts allowed
+- `X-RateLimit-Remaining`: Attempts remaining in current window
+- `X-RateLimit-Reset`: Seconds until rate limit resets
+- Standard security headers (HSTS, CSP, X-Frame-Options, etc.)
+
 ## Example
 
 [httpie](https://httpie.io) example:
 
 ```http
-$ http POST ":8080/auth" username=picnic password=mypicnic
+$ http POST ":8000/auth" username=picnic password=mypicnic Content-Type:application/json
 ```
+
+### Rate Limiting Response (429)
+
+If rate limit is exceeded:
+
+```json
+"Too Many Requests"
+```
+
+With headers indicating when you can retry.

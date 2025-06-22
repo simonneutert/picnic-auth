@@ -12,6 +12,11 @@ Authenticate a user with a bearer token in the header.
 
 Requires a `bearer` token in the header to successfully authenticate a user.
 
+**Security Features:**
+- Secure JWT decryption with proper error handling
+- PBKDF2-derived encryption keys
+- No rate limiting (validation only)
+
 | URL            | Method | Description                                |
 | -------------- | ------ | ------------------------------------------ |
 | `/auth/bearer` | `POST` | Returns the user object, if authenticated. |
@@ -31,5 +36,15 @@ Requires a `bearer` token in the header to successfully authenticate a user.
 [httpie](https://httpie.io) example:
 
 ```http
-$ http -A "Bearer" -a "YOUR TOKEN" POST ":8080/auth/bearer"
+$ http POST ":8000/auth/bearer" Authorization:"Bearer YOUR_JWT_TOKEN"
 ```
+
+### Error Response (401)
+
+If token is invalid or expired:
+
+```json
+"Unauthorized"
+```
+
+Response includes standard security headers (HSTS, CSP, X-Frame-Options, etc.)
