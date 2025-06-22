@@ -48,7 +48,7 @@ Picnic Auth is a single-user JWT authentication service built with Deno. While m
 - **Rate Limiting**: 5 attempts per 15 minutes per IP using sliding window algorithm
 - **Input Validation**: Content-Type validation, request size limits (1KB), SQL injection protection
 - **Timing Attack Protection**: Constant-time string comparison prevents username enumeration
-- **Key Derivation**: PBKDF2 with 100,000 iterations and SHA-256 for JWT encryption keys
+- **Key Derivation**: PBKDF2 with 100,000 iterations, SHA-256, and deployment-specific salt for JWT encryption keys
 - **Request Protection**: 5-second timeouts, proper error handling without information disclosure
 
 ### Configuration
@@ -64,7 +64,7 @@ Environment variables (see README.md for full list):
 - **JWT Encryption**: Uses JWE (encrypted) not JWS (signed) tokens for enhanced security
 - **Password Security**: bcrypt hashing with constant-time comparison to prevent timing attacks
 - **Rate Limiting**: In-memory sliding window implementation with automatic cleanup
-- **Key Security**: PBKDF2 key derivation ensures cryptographically secure encryption keys
+- **Key Security**: PBKDF2 key derivation with deployment-specific salt ensures cryptographically secure encryption keys
 - **Headers**: All responses include comprehensive security headers (HSTS, CSP, X-Frame-Options, etc.)
 - **Input Security**: Multi-layer validation including Content-Type, size limits, and pattern matching
 - **CORS**: Configurable via CORS_ORIGIN environment variable (defaults to "*" with warning)

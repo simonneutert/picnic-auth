@@ -11,7 +11,7 @@ let encodedJWTSecret: Uint8Array;
 if (!JWTsecret || JWTsecret.length < 32) {
   throw new Error("Secret key not set or too short");
 } else {
-  encodedJWTSecret = await stringTo32ByteArray(JWTsecret);
+  encodedJWTSecret = await stringTo32ByteArray(JWTsecret, JWTsecret);
 }
 
 // Initialize rate limiter (5 attempts per 15 minutes)

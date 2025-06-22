@@ -28,7 +28,7 @@ A single user authentication service that is simple and fun - like a picnic.
 
 1. **Simple**: A single user.\
    Secret and password managed via environment variables.
-2. **Secure**: Production-ready security with rate limiting, input validation, PBKDF2 key derivation, and timing attack protection.
+2. **Secure**: Production-ready security with rate limiting, input validation, PBKDF2 key derivation with deployment-specific salt, and timing attack protection.
 3. **Lightweight**: It's a small and fast service compile and run (everywhere).
 
 </div>

@@ -90,7 +90,7 @@ variables in a `.env` file or directly in your environment.
   (Default: "picnic")
 - `PICNIC_PASSWORD_BCRYPT` - The hashed password for authentication.\
   (Default: "mypicnic")
-- `PICNIC_JWT_SECRET` - The secret key for JWT token encryption (min 32 chars, uses PBKDF2 key derivation).
+- `PICNIC_JWT_SECRET` - The secret key for JWT token encryption (min 32 chars, uses PBKDF2 key derivation with deployment-specific salt).
 - `PICNIC_JWT_EXPIRATION_TIME` - The duration for which the bearer token is valid.\
   (Default: "60m")
 - `PICNIC_PORT` - The port on which the server will run. (Default: 8000)
@@ -150,7 +150,7 @@ The time unit can be one of the following:
 This project implements several production-ready security features:
 
 ### 🔐 **Authentication Security**
-- **PBKDF2 Key Derivation**: Uses crypto.subtle with 100,000 iterations and SHA-256
+- **PBKDF2 Key Derivation**: Uses crypto.subtle with 100,000 iterations, SHA-256, and deployment-specific salt
 - **Timing Attack Protection**: Constant-time string comparison prevents username enumeration
 - **bcrypt Password Hashing**: Industry-standard password protection
 

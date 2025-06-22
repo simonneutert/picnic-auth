@@ -14,7 +14,7 @@ Requires a `bearer` token in the header to successfully authenticate a user.
 
 **Security Features:**
 - Secure JWT decryption with proper error handling
-- PBKDF2-derived encryption keys
+- PBKDF2-derived encryption keys with deployment-specific salt
 - No rate limiting (validation only)
 
 | URL            | Method | Description                                |
