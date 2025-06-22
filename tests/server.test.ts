@@ -31,6 +31,16 @@ Deno.test("stringTo32ByteSecret", async () => {
   // Test that different inputs produce different outputs
   const differentKey = await stringTo32ByteArray("differentsecret");
   assert(derivedKey.some((byte, index) => byte !== differentKey[index]));
+  
+  // Test environment-based salt produces different results
+  const jwtSecret = "myjwtsecretkeymyjwtsecretkeymyjwtsecretkey";
+  const envBasedKey = await stringTo32ByteArray("testsecret", jwtSecret);
+  const fixedSaltKey = await stringTo32ByteArray("testsecret");
+  assert(envBasedKey.some((byte, index) => byte !== fixedSaltKey[index]));
+  
+  // Test environment-based salt is deterministic
+  const envBasedKey2 = await stringTo32ByteArray("testsecret", jwtSecret);
+  assertEquals(envBasedKey, envBasedKey2);
 });
 
 Deno.test("parse bearer token from header", () => {

@@ -1,6 +1,7 @@
 /** Convert a string to a 32-byte array using proper key derivation */
 export async function stringTo32ByteArray(
   secret: string,
+  jwtSecret?: string,
 ): Promise<Uint8Array> {
   // Import the secret as raw key material
   const keyMaterial = await crypto.subtle.importKey(
@@ -15,7 +16,11 @@ export async function stringTo32ByteArray(
   const derivedKey = await crypto.subtle.deriveBits(
     {
       name: "PBKDF2",
-      salt: new TextEncoder().encode("picnic-auth-salt-v1"), // Fixed salt for simplicity
+      salt: new TextEncoder().encode(
+        jwtSecret 
+          ? `picnic-auth-${jwtSecret.slice(0, 16)}` 
+          : "picnic-auth-salt-v1"
+      ), // Environment-based salt or fallback
       iterations: 100000, // OWASP recommended minimum
       hash: "SHA-256"
     },
